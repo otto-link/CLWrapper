@@ -20,9 +20,9 @@ int main()
   std::vector<float> b(n, 2.f);
   std::vector<float> c(n); // output
 
-  run.bind_buffer<float>("a", a, CL_MEM_READ_ONLY);
-  run.bind_buffer<float>("b", b, CL_MEM_READ_ONLY);
-  run.bind_buffer<float>("c", c, CL_MEM_WRITE_ONLY);
+  run.bind_buffer<float>("a", a);
+  run.bind_buffer<float>("b", b);
+  run.bind_buffer<float>("c", c);
 
   float p1 = 1.f;
   float p2 = 2.f;
