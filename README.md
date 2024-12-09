@@ -8,6 +8,8 @@ Clone the repository using `git`:
 
 ```bash
 git clone git@github.com:otto-link/CLWrapper.git
+cd CLWrapper
+git submodule update --init --recursive
 ```
 
 ## Build and Test
