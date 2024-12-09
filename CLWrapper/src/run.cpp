@@ -3,6 +3,8 @@
  * this software. */
 #include "macrologger.h"
 
+#include "cl_error_lookup.hpp"
+
 #include "cl_wrapper/device_manager.hpp"
 #include "cl_wrapper/kernel_manager.hpp"
 #include "cl_wrapper/run.hpp"
@@ -19,11 +21,10 @@ Run::Run(const std::string &kernel_name) : kernel_name(kernel_name)
   this->queue = cl::CommandQueue(KernelManager::context(),
                                  DeviceManager::device());
 
-  int err = 0;
   this->cl_kernel = cl::Kernel(KernelManager::program(),
                                this->kernel_name.c_str(),
                                &err);
-  LOG_DEBUG("err: %d", err);
+  clerror::throw_opencl_error(err);
 }
 
 Run::~Run()
@@ -45,28 +46,26 @@ void Run::execute(int total_elements)
   const cl::NDRange global_work_size(gsize);
   const cl::NDRange local_work_size(bsize);
 
-  int err = 0;
   err = this->queue.enqueueNDRangeKernel(this->cl_kernel,
                                          cl::NullRange,
                                          global_work_size,
                                          local_work_size);
-
-  LOG_DEBUG("err: %d", err);
+  clerror::throw_opencl_error(err);
 
   err = this->queue.flush();
+  clerror::throw_opencl_error(err);
 }
 
 void Run::read_buffer(const std::string &id)
 {
   if (this->buffers.find(id) != this->buffers.end())
   {
-    int err = 0;
     err = this->queue.enqueueReadBuffer(buffers[id].cl_buffer,
                                         CL_TRUE,
                                         0,
                                         buffers[id].size,
                                         buffers[id].vector_ref);
-    LOG_DEBUG("err: %d", err);
+    clerror::throw_opencl_error(err);
   }
   else
   {
@@ -78,13 +77,12 @@ void Run::write_buffer(const std::string &id)
 {
   if (this->buffers.find(id) != this->buffers.end())
   {
-    int err = 0;
     err = this->queue.enqueueWriteBuffer(buffers[id].cl_buffer,
                                          CL_TRUE,
                                          0,
                                          buffers[id].size,
                                          buffers[id].vector_ref);
-    LOG_DEBUG("err: %d", err);
+    clerror::throw_opencl_error(err);
   }
   else
   {

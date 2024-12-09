@@ -3,6 +3,7 @@
  * this software. */
 #include <iostream>
 
+#include "cl_error_lookup.hpp"
 #include "macrologger.h"
 
 #include "cl_wrapper/device_manager.hpp"
@@ -44,15 +45,17 @@ void KernelManager::build_program()
 
     LOG_DEBUG("building options: %s", building_options.c_str());
 
-    if (this->cl_program.build({cl_device}, building_options.c_str()) !=
-        CL_SUCCESS)
+    int err = this->cl_program.build({cl_device}, building_options.c_str());
+
+    if (err != 0)
     {
       LOG_ERROR("build error");
-      std::cout << " Error building: "
+      std::cout << " Error building, compiler says:\n"
+                << "----------------------------------------------\n"
                 << this->cl_program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(
                        cl_device)
-                << "\n";
-      throw std::runtime_error("build error");
+                << "----------------------------------------------\n";
+      clerror::throw_opencl_error(err);
     }
 
     std::string kernel_names = this->cl_program

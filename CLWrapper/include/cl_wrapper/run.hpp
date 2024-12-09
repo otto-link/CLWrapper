@@ -14,6 +14,7 @@
 
 #include <CL/opencl.hpp>
 
+#include "cl_error_lookup.hpp"
 #include "macrologger.h"
 
 namespace clwrapper
@@ -40,10 +41,16 @@ public:
 
   ~Run();
 
+  template <typename T> void bind_arguments(T arg)
+  {
+    err = this->cl_kernel.setArg(this->arg_count++, arg);
+    clerror::throw_opencl_error(err);
+  }
+
   template <typename... Args> void bind_arguments(Args... args)
   {
     // Expand the parameter pack and call fct for each argument
-    (this->cl_kernel.setArg(this->arg_count++, args), ...);
+    (this->bind_arguments(args), ...);
   }
 
   template <typename T>
@@ -51,7 +58,6 @@ public:
                    std::vector<T>    &vector,
                    cl_mem_flags       flags = CL_MEM_READ_WRITE)
   {
-    int    err = 0;
     Buffer buffer;
 
     buffer.vector_ref = static_cast<void *>(vector.data());
@@ -61,9 +67,10 @@ public:
                                   buffer.size,
                                   nullptr,
                                   &err);
+    clerror::throw_opencl_error(err);
 
     err = this->cl_kernel.setArg(this->arg_count++, buffer.cl_buffer);
-    LOG_DEBUG("err: %d", err);
+    clerror::throw_opencl_error(err);
 
     this->buffers[id] = buffer;
   }
@@ -84,6 +91,8 @@ private:
   int arg_count = 0;
 
   std::map<std::string, Buffer> buffers;
+
+  int err = 0;
 };
 
 } // namespace clwrapper
