@@ -7,17 +7,10 @@
 
 int main()
 {
-  // cl::Device dm = clwrapper::DeviceManager::device();
-
-  // clwrapper::log_device_infos(clwrapper::DeviceManager::device());
-
-  // cl::Context context({clwrapper::DeviceManager::device()});
-
-  clwrapper::KernelManager::get_instance();
-
   const std::string code =
 #include "add.cl"
       ;
+
   clwrapper::KernelManager::get_instance().add_kernel(code);
 
   auto run = clwrapper::Run("add_kernel_with_args");
