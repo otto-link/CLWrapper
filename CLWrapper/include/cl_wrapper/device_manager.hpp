@@ -12,6 +12,8 @@
 #pragma once
 #include <CL/opencl.hpp>
 
+#include "macrologger.h"
+
 namespace clwrapper
 {
 
@@ -23,6 +25,26 @@ public:
   {
     static DeviceManager instance;
     return instance;
+  }
+
+  static bool is_ready()
+  {
+    try
+    {
+      DeviceManager &dm = DeviceManager::get_instance();
+    }
+    catch (const std::exception &e)
+    {
+      LOG_ERROR("Error: %s", e.what());
+      return false;
+    }
+    catch (...)
+    {
+      LOG_ERROR("Unknown error");
+      return false;
+    }
+
+    return true;
   }
 
   // Get the OpenCL device attached to the singleton instance
