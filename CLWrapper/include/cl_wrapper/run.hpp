@@ -41,6 +41,12 @@ struct Image2D
   int         height;
 };
 
+enum Direction
+{
+  IN,
+  OUT
+};
+
 // class
 class Run
 {
@@ -87,7 +93,8 @@ public:
   void bind_imagef(const std::string  &id,
                    std::vector<float> &vector,
                    int                 width,
-                   int                 height);
+                   int                 height,
+                   Direction           direction);
 
   void execute(int total_elements);
 

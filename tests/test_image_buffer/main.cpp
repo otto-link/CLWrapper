@@ -23,8 +23,8 @@ int main()
 
   // NB - data are copied at binding, and one vector host data can be
   // binded to multiple device image buffers
-  run.bind_imagef("a", a, width, height);
-  run.bind_imagef("b", b, width, height);
+  run.bind_imagef("a", a, width, height, clwrapper::Direction::IN);
+  run.bind_imagef("b", b, width, height, clwrapper::Direction::OUT);
 
   run.bind_arguments(width, height);
 

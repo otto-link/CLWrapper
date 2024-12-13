@@ -35,21 +35,34 @@ Run::~Run()
 void Run::bind_imagef(const std::string  &id,
                       std::vector<float> &vector,
                       int                 width,
-                      int                 height)
+                      int                 height,
+                      Direction           direction)
 {
   Image2D img;
 
   img.vector_ref = static_cast<void *>(vector.data());
   img.width = width;
   img.height = height;
-  img.cl_image = cl::Image2D(KernelManager::context(),
-                             CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
-                             cl::ImageFormat(CL_LUMINANCE, CL_FLOAT),
-                             width,
-                             height,
-                             0,
-                             (void *)img.vector_ref,
-                             &err);
+
+  if (direction == Direction::IN)
+    img.cl_image = cl::Image2D(KernelManager::context(),
+                               CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+                               cl::ImageFormat(CL_LUMINANCE, CL_FLOAT),
+                               width,
+                               height,
+                               0,
+                               (void *)img.vector_ref,
+                               &err);
+  else
+    img.cl_image = cl::Image2D(KernelManager::context(),
+                               CL_MEM_WRITE_ONLY,
+                               cl::ImageFormat(CL_LUMINANCE, CL_FLOAT),
+                               width,
+                               height,
+                               0,
+                               nullptr,
+                               &err);
+
   clerror::throw_opencl_error(err);
 
   err = this->cl_kernel.setArg(this->arg_count++, img.cl_image);
