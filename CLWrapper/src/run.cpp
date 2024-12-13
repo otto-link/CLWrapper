@@ -32,6 +32,32 @@ Run::~Run()
   this->queue.finish();
 }
 
+void Run::bind_imagef(const std::string  &id,
+                      std::vector<float> &vector,
+                      int                 width,
+                      int                 height)
+{
+  Image2D img;
+
+  img.vector_ref = static_cast<void *>(vector.data());
+  img.width = width;
+  img.height = height;
+  img.cl_image = cl::Image2D(KernelManager::context(),
+                             CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+                             cl::ImageFormat(CL_LUMINANCE, CL_FLOAT),
+                             width,
+                             height,
+                             0,
+                             (void *)img.vector_ref,
+                             &err);
+  clerror::throw_opencl_error(err);
+
+  err = this->cl_kernel.setArg(this->arg_count++, img.cl_image);
+  clerror::throw_opencl_error(err);
+
+  this->images_2d[id] = img;
+}
+
 void Run::execute(int total_elements)
 {
   LOG_DEBUG("executing... [%s]", this->kernel_name.c_str());
@@ -64,7 +90,7 @@ void Run::execute(const std::vector<int> &global_range_2d)
 
   int bsize = KernelManager::get_instance().get_block_size();
   int gsize_x = ((global_range_2d[0] + bsize - 1ull) / bsize) * bsize;
-  int gsize_y = ((global_range_2d[0] + bsize - 1ull) / bsize) * bsize;
+  int gsize_y = ((global_range_2d[1] + bsize - 1ull) / bsize) * bsize;
 
   const cl::NDRange global_work_size(gsize_x, gsize_y);
   const cl::NDRange local_work_size(bsize, bsize);
@@ -93,6 +119,30 @@ void Run::read_buffer(const std::string &id)
   else
   {
     LOG_ERROR("unknown buffer id: [%s]", id.c_str());
+  }
+}
+
+void Run::read_imagef(const std::string &id)
+{
+  if (this->images_2d.find(id) != this->images_2d.end())
+  {
+    cl::array<size_t, 3> origin = {0, 0, 0};
+    cl::array<size_t, 3> region = {(size_t)this->images_2d[id].width,
+                                   (size_t)this->images_2d[id].height,
+                                   1};
+
+    err = queue.enqueueReadImage(this->images_2d[id].cl_image,
+                                 CL_TRUE,
+                                 origin,
+                                 region,
+                                 0,
+                                 0,
+                                 this->images_2d[id].vector_ref);
+    clerror::throw_opencl_error(err);
+  }
+  else
+  {
+    LOG_ERROR("unknown 2D imagef id: [%s]", id.c_str());
   }
 }
 

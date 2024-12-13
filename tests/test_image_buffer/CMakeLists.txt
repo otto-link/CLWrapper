@@ -1,0 +1,2 @@
+add_executable(test_clwrapper_image_buffer main.cpp)
+target_link_libraries(test_clwrapper_image_buffer clwrapper)

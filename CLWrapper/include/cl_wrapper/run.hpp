@@ -33,6 +33,14 @@ struct Buffer
   size_t     size;
 };
 
+struct Image2D
+{
+  cl::Image2D cl_image;
+  void       *vector_ref;
+  int         width;
+  int         height;
+};
+
 // class
 class Run
 {
@@ -75,11 +83,19 @@ public:
     this->buffers[id] = buffer;
   }
 
+  // data are copied at binding
+  void bind_imagef(const std::string  &id,
+                   std::vector<float> &vector,
+                   int                 width,
+                   int                 height);
+
   void execute(int total_elements);
 
   void execute(const std::vector<int> &global_range_2d);
 
   void read_buffer(const std::string &id);
+
+  void read_imagef(const std::string &id);
 
   void write_buffer(const std::string &id);
 
@@ -93,6 +109,8 @@ private:
   int arg_count = 0;
 
   std::map<std::string, Buffer> buffers;
+
+  std::map<std::string, Image2D> images_2d;
 
   int err = 0;
 };
