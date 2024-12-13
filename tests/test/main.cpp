@@ -32,7 +32,7 @@ int main()
   run.write_buffer("a");
   run.write_buffer("b");
 
-  run.execute(4);
+  run.execute(n);
 
   run.read_buffer("c");
 
