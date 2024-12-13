@@ -31,7 +31,7 @@ public:
   {
     try
     {
-      DeviceManager &dm = DeviceManager::get_instance();
+      DeviceManager::get_instance();
     }
     catch (const std::exception &e)
     {
