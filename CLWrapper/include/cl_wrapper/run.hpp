@@ -77,6 +77,8 @@ public:
 
   void execute(int total_elements);
 
+  void execute(const std::vector<int> &global_range_2d);
+
   void read_buffer(const std::string &id);
 
   void write_buffer(const std::string &id);

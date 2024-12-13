@@ -56,6 +56,29 @@ void Run::execute(int total_elements)
   clerror::throw_opencl_error(err);
 }
 
+void Run::execute(const std::vector<int> &global_range_2d)
+{
+  LOG_DEBUG("executing... [%s]", this->kernel_name.c_str());
+
+  this->queue.flush();
+
+  int bsize = KernelManager::get_instance().get_block_size();
+  int gsize_x = ((global_range_2d[0] + bsize - 1ull) / bsize) * bsize;
+  int gsize_y = ((global_range_2d[0] + bsize - 1ull) / bsize) * bsize;
+
+  const cl::NDRange global_work_size(gsize_x, gsize_y);
+  const cl::NDRange local_work_size(bsize, bsize);
+
+  err = this->queue.enqueueNDRangeKernel(this->cl_kernel,
+                                         cl::NullRange,
+                                         global_work_size,
+                                         local_work_size);
+  clerror::throw_opencl_error(err);
+
+  err = this->queue.flush();
+  clerror::throw_opencl_error(err);
+}
+
 void Run::read_buffer(const std::string &id)
 {
   if (this->buffers.find(id) != this->buffers.end())
