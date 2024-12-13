@@ -1,6 +1,6 @@
 # CLWrapper
 
-This library provides a C++ wrapper for OpenCL, simplifying tasks like context creation, device management, program compilation, and kernel execution. It abstracts common OpenCL tasks and allows to integrate GPU-based parallel computing into C++ applications.
+This library provides a C++ wrapper for OpenCL, simplifying tasks like context creation, device management, program compilation, and kernel execution. It abstracts common OpenCL tasks and allows to integrate GPU-based parallel computing into C++ applications. Image buffer bindings are also provided.
 
 ## Getting the Sources
 
