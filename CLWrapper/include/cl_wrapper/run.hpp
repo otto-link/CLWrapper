@@ -96,6 +96,12 @@ public:
                    int                 height,
                    Direction           direction);
 
+  void bind_imagef(const std::string  &id,
+                   std::vector<float> &vector,
+                   int                 width,
+                   int                 height,
+                   bool                is_out = false);
+
   void execute(int total_elements);
 
   void execute(const std::vector<int> &global_range_2d);

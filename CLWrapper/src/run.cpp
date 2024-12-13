@@ -71,6 +71,16 @@ void Run::bind_imagef(const std::string  &id,
   this->images_2d[id] = img;
 }
 
+void Run::bind_imagef(const std::string  &id,
+                      std::vector<float> &vector,
+                      int                 width,
+                      int                 height,
+                      bool                is_out)
+{
+  Direction direction = is_out ? Direction::OUT : Direction::IN;
+  bind_imagef(id, vector, width, height, direction);
+}
+
 void Run::execute(int total_elements)
 {
   LOG_DEBUG("executing... [%s]", this->kernel_name.c_str());
@@ -107,6 +117,8 @@ void Run::execute(const std::vector<int> &global_range_2d)
 
   const cl::NDRange global_work_size(gsize_x, gsize_y);
   const cl::NDRange local_work_size(bsize, bsize);
+
+  LOG_DEBUG("global_size: {%d %d}, local_size: %d", gsize_x, gsize_y, bsize);
 
   err = this->queue.enqueueNDRangeKernel(this->cl_kernel,
                                          cl::NullRange,
