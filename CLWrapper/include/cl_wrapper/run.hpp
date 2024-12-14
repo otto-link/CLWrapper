@@ -110,7 +110,14 @@ public:
 
   void read_imagef(const std::string &id);
 
+  void reset_argcount()
+  {
+    this->arg_count = 0;
+  }
+
   void write_buffer(const std::string &id);
+
+  void write_imagef(const std::string &id);
 
 private:
   std::string kernel_name;

@@ -107,7 +107,7 @@ void Run::execute(int total_elements)
 
 void Run::execute(const std::vector<int> &global_range_2d)
 {
-  LOG_DEBUG("executing... [%s]", this->kernel_name.c_str());
+  // LOG_DEBUG("executing... [%s]", this->kernel_name.c_str());
 
   this->queue.flush();
 
@@ -118,7 +118,7 @@ void Run::execute(const std::vector<int> &global_range_2d)
   const cl::NDRange global_work_size(gsize_x, gsize_y);
   const cl::NDRange local_work_size(bsize, bsize);
 
-  LOG_DEBUG("global_size: {%d %d}, local_size: %d", gsize_x, gsize_y, bsize);
+  // LOG_DEBUG("global_size: {%d %d}, local_size: %d", gsize_x, gsize_y, bsize);
 
   err = this->queue.enqueueNDRangeKernel(this->cl_kernel,
                                          cl::NullRange,
@@ -185,6 +185,30 @@ void Run::write_buffer(const std::string &id)
   else
   {
     LOG_ERROR("unknown buffer id: [%s]", id.c_str());
+  }
+}
+
+void Run::write_imagef(const std::string &id)
+{
+  if (this->images_2d.find(id) != this->images_2d.end())
+  {
+    cl::array<size_t, 3> origin = {0, 0, 0};
+    cl::array<size_t, 3> region = {(size_t)this->images_2d[id].width,
+                                   (size_t)this->images_2d[id].height,
+                                   1};
+
+    err = queue.enqueueWriteImage(this->images_2d[id].cl_image,
+                                  CL_TRUE,
+                                  origin,
+                                  region,
+                                  0,
+                                  0,
+                                  this->images_2d[id].vector_ref);
+    clerror::throw_opencl_error(err);
+  }
+  else
+  {
+    LOG_ERROR("unknown 2D imagef id: [%s]", id.c_str());
   }
 }
 
