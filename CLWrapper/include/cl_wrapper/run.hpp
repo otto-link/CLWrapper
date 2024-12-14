@@ -61,6 +61,12 @@ public:
     clerror::throw_opencl_error(err);
   }
 
+  template <typename T> void bind_arguments(int arg_pos, T arg)
+  {
+    err = this->cl_kernel.setArg(arg_pos, arg);
+    clerror::throw_opencl_error(err);
+  }
+
   template <typename... Args> void bind_arguments(Args... args)
   {
     // Expand the parameter pack and call fct for each argument
