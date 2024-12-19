@@ -42,8 +42,6 @@ void log_device_infos(cl::Device cl_device)
   LOG_INFO("- device Name: %s", cl_device.getInfo<CL_DEVICE_NAME>().c_str());
   LOG_INFO(" - device Vendor: %s",
            cl_device.getInfo<CL_DEVICE_VENDOR>().c_str());
-  LOG_INFO(" - device Version: %s",
-           cl_device.getInfo<CL_DEVICE_VERSION>().c_str());
 
   switch (cl_device.getInfo<CL_DEVICE_TYPE>())
   {
