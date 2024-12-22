@@ -83,7 +83,7 @@ void Run::bind_imagef(const std::string  &id,
 
 void Run::execute(int total_elements)
 {
-  LOG_DEBUG("executing... [%s]", this->kernel_name.c_str());
+  // LOG_DEBUG("executing... [%s]", this->kernel_name.c_str());
 
   this->queue.flush();
 
