@@ -42,36 +42,45 @@ DeviceManager::DeviceManager()
 
   for (size_t kp = 0; kp < platforms.size(); kp++)
   {
+    LOG_DEBUG("checking platform: %s - %s",
+              platforms[kp].getInfo<CL_PLATFORM_VENDOR>().c_str(),
+              platforms[kp].getInfo<CL_PLATFORM_NAME>().c_str());
+
     std::vector<cl::Device> devices;
-    platforms[kp].getDevices(CL_DEVICE_TYPE_GPU, &devices);
+    platforms[kp].getDevices(CL_DEVICE_TYPE_ALL, &devices);
 
     if (devices.empty())
-      throw std::runtime_error("No OpenCL devices found for this platform!");
-
-    // estimate of the number of cores per computational unit for the
-    // platform
-    std::string vendor = devices[0].getInfo<CL_DEVICE_VENDOR>();
-    int         cores = 1;
-
-    if (helper_find_string_insensitive(vendor, "nvidia") ||
-        helper_find_string_insensitive(vendor, "amd"))
-      cores = 128;
-    else if (helper_find_string_insensitive(vendor, "intel"))
-      cores = 16;
-
-    int flops = (int)devices[0].getInfo<CL_DEVICE_MAX_CLOCK_FREQUENCY>() *
-                (int)devices[0].getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>() * cores;
-
-    if (flops > flops_best)
     {
-      flops_best = flops;
-      platform_index = kp;
+      LOG_ERROR("No OpenCL devices found for this platform!");
     }
+    else
+    {
+      // estimate of the number of cores per computational unit for the
+      // platform
+      std::string vendor = devices[0].getInfo<CL_DEVICE_VENDOR>();
+      int         cores = 1;
 
-    LOG_DEBUG("rating - device: %s, vendor: %s, rating: %d",
-              devices[0].getInfo<CL_DEVICE_NAME>().c_str(),
-              vendor.c_str(),
-              flops);
+      if (helper_find_string_insensitive(vendor, "nvidia") ||
+          helper_find_string_insensitive(vendor, "amd"))
+        cores = 128;
+      else if (helper_find_string_insensitive(vendor, "intel"))
+        cores = 16;
+
+      int flops = (int)devices[0].getInfo<CL_DEVICE_MAX_CLOCK_FREQUENCY>() *
+                  (int)devices[0].getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>() *
+                  cores;
+
+      if (flops > flops_best)
+      {
+        flops_best = flops;
+        platform_index = kp;
+      }
+
+      LOG_DEBUG("rating - device: %s, vendor: %s, rating: %d",
+                devices[0].getInfo<CL_DEVICE_NAME>().c_str(),
+                vendor.c_str(),
+                flops);
+    }
   }
 
   // eventually assign the platform / device
