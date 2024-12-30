@@ -65,7 +65,7 @@ private:
   KernelManager(const KernelManager &) = delete;
   KernelManager &operator=(const KernelManager &) = delete;
 
-  int block_size = 8;
+  int block_size = 32;
 
   cl::Program cl_program;
 
