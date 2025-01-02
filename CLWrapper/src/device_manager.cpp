@@ -85,17 +85,73 @@ DeviceManager::DeviceManager()
 
   // eventually assign the platform / device
   std::vector<cl::Device> devices;
-  platforms[platform_index].getDevices(CL_DEVICE_TYPE_GPU, &devices);
+  platforms[platform_index].getDevices(CL_DEVICE_TYPE_ALL, &devices);
   this->cl_device = devices[0];
 
   LOG_DEBUG("OpenCL device: %s",
             this->cl_device.getInfo<CL_DEVICE_NAME>().c_str());
 }
 
-// Access the OpenCL device
+std::map<size_t, std::string> DeviceManager::get_available_devices()
+{
+  std::map<size_t, std::string> device_map = {};
+
+  std::vector<cl::Platform> platforms;
+  cl::Platform::get(&platforms);
+
+  if (platforms.empty()) throw std::runtime_error("No OpenCL platforms found!");
+
+  for (size_t kp = 0; kp < platforms.size(); kp++)
+  {
+    std::vector<cl::Device> devices;
+    platforms[kp].getDevices(CL_DEVICE_TYPE_ALL, &devices);
+
+    if (devices.empty())
+    {
+      LOG_ERROR("No OpenCL devices found for this platform!");
+    }
+    else
+    {
+      std::string name = platforms[kp].getInfo<CL_PLATFORM_VENDOR>() + "/" +
+                         platforms[kp].getInfo<CL_PLATFORM_NAME>() + "/" +
+                         devices[0].getInfo<CL_DEVICE_NAME>();
+
+      device_map[kp] = name;
+    }
+  }
+
+  return device_map;
+}
+
 cl::Device DeviceManager::get_device() const
 {
   return this->cl_device;
+}
+
+bool DeviceManager::set_device(size_t platform_id)
+{
+  std::vector<cl::Platform> platforms;
+  cl::Platform::get(&platforms);
+
+  if (platforms.empty()) throw std::runtime_error("No OpenCL platforms found!");
+
+  std::vector<cl::Device> devices;
+  platforms[platform_id].getDevices(CL_DEVICE_TYPE_ALL, &devices);
+
+  if (devices.empty())
+  {
+    LOG_ERROR("No OpenCL devices found for this platform!");
+    return false;
+  }
+  else
+  {
+    this->cl_device = devices[0];
+
+    LOG_DEBUG("OpenCL device: %s",
+              this->cl_device.getInfo<CL_DEVICE_NAME>().c_str());
+  }
+
+  return true;
 }
 
 void log_device_infos(cl::Device cl_device)

@@ -10,6 +10,8 @@
  * @copyright Copyright (c) 2025
  */
 #pragma once
+#include <map>
+
 #include <CL/opencl.hpp>
 
 #include "macrologger.h"
@@ -53,8 +55,13 @@ public:
     return DeviceManager::get_instance().get_device();
   }
 
+  // list all the available devices
+  std::map<size_t, std::string> get_available_devices();
+
   // Access the OpenCL device
   cl::Device get_device() const;
+
+  bool set_device(size_t platform_id);
 
 private:
   cl::Device cl_device;

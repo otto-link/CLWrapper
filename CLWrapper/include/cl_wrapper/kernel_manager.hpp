@@ -40,6 +40,11 @@ public:
 
   void build_program();
 
+  void clear_sources()
+  {
+    this->full_sources = "";
+  }
+
   int get_block_size() const
   {
     return this->block_size;
