@@ -61,10 +61,17 @@ public:
   // Access the OpenCL device
   cl::Device get_device() const;
 
+  size_t get_device_id() const
+  {
+    return this->device_id;
+  }
+
   bool set_device(size_t platform_id);
 
 private:
   cl::Device cl_device;
+
+  size_t device_id = 0;
 
   // Private constructor
   DeviceManager();
