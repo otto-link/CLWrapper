@@ -101,7 +101,7 @@ void Run::execute(int total_elements)
                                          local_work_size);
   clerror::throw_opencl_error(err);
 
-  err = this->queue.flush();
+  err = this->queue.finish();
   clerror::throw_opencl_error(err);
 }
 
