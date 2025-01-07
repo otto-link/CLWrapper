@@ -68,10 +68,18 @@ public:
 
   bool set_device(size_t platform_id);
 
+  void set_device_type(cl_device_type new_device_type)
+  {
+    this->device_type = new_device_type;
+  }
+
 private:
   cl::Device cl_device;
 
   size_t device_id = 0;
+
+  // allowed device type (CL_DEVICE_TYPE_ALL | GPU | CPU)
+  cl_device_type device_type = CL_DEVICE_TYPE_GPU;
 
   // Private constructor
   DeviceManager();

@@ -112,8 +112,8 @@ void Run::execute(const std::vector<int> &global_range_2d)
   this->queue.flush();
 
   int bsize = KernelManager::get_instance().get_block_size();
-  int gsize_x = ((global_range_2d[0] + bsize - 1ull) / bsize) * bsize;
-  int gsize_y = ((global_range_2d[1] + bsize - 1ull) / bsize) * bsize;
+  int gsize_x = ((global_range_2d[0] + bsize - 1) / bsize) * bsize;
+  int gsize_y = ((global_range_2d[1] + bsize - 1) / bsize) * bsize;
 
   const cl::NDRange global_work_size(gsize_x, gsize_y);
   const cl::NDRange local_work_size(bsize, bsize);
