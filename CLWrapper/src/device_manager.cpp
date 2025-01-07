@@ -47,7 +47,7 @@ DeviceManager::DeviceManager()
               platforms[kp].getInfo<CL_PLATFORM_NAME>().c_str());
 
     std::vector<cl::Device> devices;
-    platforms[kp].getDevices(CL_DEVICE_TYPE_ALL, &devices);
+    platforms[kp].getDevices(this->device_type, &devices);
 
     if (devices.empty())
     {
@@ -85,8 +85,9 @@ DeviceManager::DeviceManager()
 
   // eventually assign the platform / device
   std::vector<cl::Device> devices;
-  platforms[platform_index].getDevices(CL_DEVICE_TYPE_ALL, &devices);
+  platforms[platform_index].getDevices(this->device_type, &devices);
   this->cl_device = devices[0];
+  this->device_id = platform_index;
 
   LOG_DEBUG("OpenCL device: %s",
             this->cl_device.getInfo<CL_DEVICE_NAME>().c_str());
@@ -104,7 +105,7 @@ std::map<size_t, std::string> DeviceManager::get_available_devices()
   for (size_t kp = 0; kp < platforms.size(); kp++)
   {
     std::vector<cl::Device> devices;
-    platforms[kp].getDevices(CL_DEVICE_TYPE_ALL, &devices);
+    platforms[kp].getDevices(this->device_type, &devices);
 
     if (devices.empty())
     {
@@ -136,7 +137,7 @@ bool DeviceManager::set_device(size_t platform_id)
   if (platforms.empty()) throw std::runtime_error("No OpenCL platforms found!");
 
   std::vector<cl::Device> devices;
-  platforms[platform_id].getDevices(CL_DEVICE_TYPE_ALL, &devices);
+  platforms[platform_id].getDevices(this->device_type, &devices);
 
   if (devices.empty())
   {
@@ -146,6 +147,7 @@ bool DeviceManager::set_device(size_t platform_id)
   else
   {
     this->cl_device = devices[0];
+    this->device_id = platform_id;
 
     LOG_DEBUG("OpenCL device: %s",
               this->cl_device.getInfo<CL_DEVICE_NAME>().c_str());

@@ -47,7 +47,7 @@ void Run::bind_imagef(const std::string  &id,
   if (direction == Direction::IN)
     img.cl_image = cl::Image2D(KernelManager::context(),
                                CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                               cl::ImageFormat(CL_LUMINANCE, CL_FLOAT),
+                               cl::ImageFormat(CL_R, CL_FLOAT),
                                width,
                                height,
                                0,
@@ -56,7 +56,7 @@ void Run::bind_imagef(const std::string  &id,
   else
     img.cl_image = cl::Image2D(KernelManager::context(),
                                CL_MEM_WRITE_ONLY,
-                               cl::ImageFormat(CL_LUMINANCE, CL_FLOAT),
+                               cl::ImageFormat(CL_R, CL_FLOAT),
                                width,
                                height,
                                0,
@@ -100,7 +100,7 @@ void Run::execute(int total_elements)
                                          cl::NullRange);
   clerror::throw_opencl_error(err);
 
-  err = this->queue.flush();
+  err = this->queue.finish();
   clerror::throw_opencl_error(err);
 }
 
