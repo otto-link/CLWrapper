@@ -87,18 +87,17 @@ void Run::execute(int total_elements)
 
   this->queue.flush();
 
-  // ensure gloabl size is rounded up to the nearest multiple of local
-  // group size
-  int bsize = KernelManager::get_instance().get_block_size();
-  int gsize = ((total_elements + bsize - 1ull) / bsize) * bsize;
+  // ensure gloabl size is rounded up to the nearest multiple of a power of 2 to
+  // avoid weird global size with no divisor
+  int bsize = 8;
+  int gsize = ((total_elements + bsize - 1) / bsize) * bsize;
 
   const cl::NDRange global_work_size(gsize);
-  const cl::NDRange local_work_size(bsize);
 
   err = this->queue.enqueueNDRangeKernel(this->cl_kernel,
                                          cl::NullRange,
                                          global_work_size,
-                                         local_work_size);
+                                         cl::NullRange);
   clerror::throw_opencl_error(err);
 
   err = this->queue.flush();
@@ -111,19 +110,16 @@ void Run::execute(const std::vector<int> &global_range_2d)
 
   this->queue.flush();
 
-  int bsize = KernelManager::get_instance().get_block_size();
-  int gsize_x = ((global_range_2d[0] + bsize - 1ull) / bsize) * bsize;
-  int gsize_y = ((global_range_2d[1] + bsize - 1ull) / bsize) * bsize;
+  int bsize = 8;
+  int gsize_x = ((global_range_2d[0] + bsize - 1) / bsize) * bsize;
+  int gsize_y = ((global_range_2d[1] + bsize - 1) / bsize) * bsize;
 
   const cl::NDRange global_work_size(gsize_x, gsize_y);
-  const cl::NDRange local_work_size(bsize, bsize);
-
-  // LOG_DEBUG("global_size: {%d %d}, local_size: %d", gsize_x, gsize_y, bsize);
 
   err = this->queue.enqueueNDRangeKernel(this->cl_kernel,
                                          cl::NullRange,
                                          global_work_size,
-                                         local_work_size);
+                                         cl::NullRange);
   clerror::throw_opencl_error(err);
 
   err = this->queue.flush();

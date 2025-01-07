@@ -40,12 +40,7 @@ void KernelManager::build_program()
     LOG_DEBUG("building OpenCL kernels");
 
     this->cl_program = cl::Program(this->cl_context, sources);
-    std::string building_options = "-DBLOCK_SIZE=" +
-                                   std::to_string(this->block_size);
-
-    LOG_DEBUG("building options: %s", building_options.c_str());
-
-    int err = this->cl_program.build({cl_device}, building_options.c_str());
+    int err = this->cl_program.build({cl_device});
 
     if (err != 0)
     {
@@ -66,12 +61,6 @@ void KernelManager::build_program()
   {
     LOG_ERROR("program building skipped, kernel sources are empty");
   }
-}
-
-void KernelManager::set_block_size(int new_block_size)
-{
-  this->block_size = new_block_size;
-  this->build_program();
 }
 
 } // namespace clwrapper

@@ -45,11 +45,6 @@ public:
     this->full_sources = "";
   }
 
-  int get_block_size() const
-  {
-    return this->block_size;
-  }
-
   cl::Context get_context() const
   {
     return this->cl_context;
@@ -60,8 +55,6 @@ public:
     return this->cl_program;
   }
 
-  void set_block_size(int new_block_size);
-
 private:
   // Private constructor
   KernelManager();
@@ -69,8 +62,6 @@ private:
   // Delete copy constructor and assignment operator to enforce singleton
   KernelManager(const KernelManager &) = delete;
   KernelManager &operator=(const KernelManager &) = delete;
-
-  int block_size = 32;
 
   cl::Program cl_program;
 
