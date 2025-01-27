@@ -81,7 +81,7 @@ public:
     Buffer buffer;
 
     buffer.vector_ref = static_cast<void *>(vector.data());
-    buffer.size = vector_sizeof<float>(vector);
+    buffer.size = vector_sizeof<T>(vector);
     buffer.cl_buffer = cl::Buffer(KernelManager::context(),
                                   flags,
                                   buffer.size,
