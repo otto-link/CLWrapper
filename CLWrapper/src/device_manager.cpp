@@ -52,7 +52,7 @@ DeviceManager::DeviceManager()
 
     if (devices.empty())
     {
-      Logger::log()->info("No OpenCL devices found for this platform");
+      Logger::log()->trace("No OpenCL devices found for this platform");
     }
     else
     {
