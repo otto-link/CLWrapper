@@ -52,7 +52,7 @@ DeviceManager::DeviceManager()
 
     if (devices.empty())
     {
-      Logger::log()->error("No OpenCL devices found for this platform!");
+      Logger::log()->info("No OpenCL devices found for this platform");
     }
     else
     {
@@ -90,8 +90,10 @@ DeviceManager::DeviceManager()
   this->cl_device = devices[0];
   this->device_id = platform_index;
 
-  Logger::log()->trace("Selected OpenCL device: {}",
-                       this->cl_device.getInfo<CL_DEVICE_NAME>().c_str());
+  Logger::log()->info("Selected OpenCL device: {}",
+                      this->cl_device.getInfo<CL_DEVICE_NAME>().c_str());
+
+  log_device_infos(this->cl_device);
 }
 
 std::map<size_t, std::string> DeviceManager::get_available_devices()
@@ -110,7 +112,7 @@ std::map<size_t, std::string> DeviceManager::get_available_devices()
 
     if (devices.empty())
     {
-      Logger::log()->error("No OpenCL devices found for this platform!");
+      Logger::log()->trace("No OpenCL devices found for this platform");
     }
     else
     {
@@ -142,7 +144,7 @@ bool DeviceManager::set_device(size_t platform_id)
 
   if (devices.empty())
   {
-    Logger::log()->error("No OpenCL devices found for this platform!");
+    Logger::log()->error("No OpenCL devices found for this platform");
     return false;
   }
   else

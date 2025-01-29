@@ -61,7 +61,7 @@ void KernelManager::build_program()
   }
   else
   {
-    Logger::log()->error("program building skipped, kernel sources are empty");
+    Logger::log()->trace("program building skipped, kernel sources are empty");
   }
 }
 
