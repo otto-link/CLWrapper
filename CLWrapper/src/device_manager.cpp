@@ -159,21 +159,22 @@ bool DeviceManager::set_device(size_t platform_id)
 
 void log_device_infos(cl::Device cl_device)
 {
-  // LOG_INFO("- device Name: %s", cl_device.getInfo<CL_DEVICE_NAME>().c_str());
-  // LOG_INFO(" - device Vendor: %s",
-  //          cl_device.getInfo<CL_DEVICE_VENDOR>().c_str());
-  // LOG_INFO(" - device Version: %s",
-  //          cl_device.getInfo<CL_DEVICE_VERSION>().c_str());
+  Logger::log()->info("- device Name: {}",
+                      cl_device.getInfo<CL_DEVICE_NAME>().c_str());
+  Logger::log()->info(" - device Vendor: {}",
+                      cl_device.getInfo<CL_DEVICE_VENDOR>().c_str());
+  Logger::log()->info(" - device Version: {}",
+                      cl_device.getInfo<CL_DEVICE_VERSION>().c_str());
 
-  // switch (cl_device.getInfo<CL_DEVICE_TYPE>())
-  // {
-  // case CL_DEVICE_TYPE_GPU: LOG_INFO(" - device Type: GPU"); break;
-  // case CL_DEVICE_TYPE_CPU: LOG_INFO(" - device Type: CPU"); break;
-  // case CL_DEVICE_TYPE_ACCELERATOR:
-  //   LOG_INFO(" - device Type: ACCELERATOR");
-  //   break;
-  // default: LOG_INFO(" - device Type: unknown");
-  // }
+  switch (cl_device.getInfo<CL_DEVICE_TYPE>())
+  {
+  case CL_DEVICE_TYPE_GPU: Logger::log()->info(" - device Type: GPU"); break;
+  case CL_DEVICE_TYPE_CPU: Logger::log()->info(" - device Type: CPU"); break;
+  case CL_DEVICE_TYPE_ACCELERATOR:
+    Logger::log()->info(" - device Type: ACCELERATOR");
+    break;
+  default: Logger::log()->info(" - device Type: unknown");
+  }
 }
 
 } // namespace clwrapper
