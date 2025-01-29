@@ -3,9 +3,8 @@
  * this software. */
 #include <algorithm>
 
-#include "macrologger.h"
-
 #include "cl_wrapper/device_manager.hpp"
+#include "cl_wrapper/logger.hpp"
 
 namespace clwrapper
 {
@@ -25,10 +24,10 @@ bool helper_find_string_insensitive(const std::string &text,
 
 DeviceManager::DeviceManager()
 {
-  LOG_DEBUG("DeviceManager::DeviceManager");
+  Logger::log()->trace("DeviceManager::DeviceManager");
 
   // initialize the device (example: first GPU)
-  LOG_DEBUG("initializing OpenCL devices...");
+  Logger::log()->trace("initializing OpenCL devices...");
 
   std::vector<cl::Platform> platforms;
   cl::Platform::get(&platforms);
@@ -40,20 +39,20 @@ DeviceManager::DeviceManager()
   int platform_index = 0;
   int flops_best = 0;
 
-  LOG_DEBUG("checking device performances...");
+  Logger::log()->trace("checking device performances...");
 
   for (size_t kp = 0; kp < platforms.size(); kp++)
   {
-    LOG_DEBUG("checking platform: %s - %s",
-              platforms[kp].getInfo<CL_PLATFORM_VENDOR>().c_str(),
-              platforms[kp].getInfo<CL_PLATFORM_NAME>().c_str());
+    Logger::log()->trace("checking platform: {} - {}",
+                         platforms[kp].getInfo<CL_PLATFORM_VENDOR>().c_str(),
+                         platforms[kp].getInfo<CL_PLATFORM_NAME>().c_str());
 
     std::vector<cl::Device> devices;
     platforms[kp].getDevices(this->device_type, &devices);
 
     if (devices.empty())
     {
-      LOG_ERROR("No OpenCL devices found for this platform!");
+      Logger::log()->error("No OpenCL devices found for this platform!");
     }
     else
     {
@@ -78,10 +77,10 @@ DeviceManager::DeviceManager()
         platform_index = kp;
       }
 
-      LOG_DEBUG("rating - device: %s, vendor: %s, rating: %d",
-                devices[0].getInfo<CL_DEVICE_NAME>().c_str(),
-                vendor.c_str(),
-                flops);
+      Logger::log()->trace("rating - device: {}, vendor: {}, rating: {}",
+                           devices[0].getInfo<CL_DEVICE_NAME>().c_str(),
+                           vendor.c_str(),
+                           flops);
     }
   }
 
@@ -91,8 +90,8 @@ DeviceManager::DeviceManager()
   this->cl_device = devices[0];
   this->device_id = platform_index;
 
-  LOG_DEBUG("OpenCL device: %s",
-            this->cl_device.getInfo<CL_DEVICE_NAME>().c_str());
+  Logger::log()->trace("Selected OpenCL device: {}",
+                       this->cl_device.getInfo<CL_DEVICE_NAME>().c_str());
 }
 
 std::map<size_t, std::string> DeviceManager::get_available_devices()
@@ -111,7 +110,7 @@ std::map<size_t, std::string> DeviceManager::get_available_devices()
 
     if (devices.empty())
     {
-      LOG_ERROR("No OpenCL devices found for this platform!");
+      Logger::log()->error("No OpenCL devices found for this platform!");
     }
     else
     {
@@ -143,7 +142,7 @@ bool DeviceManager::set_device(size_t platform_id)
 
   if (devices.empty())
   {
-    LOG_ERROR("No OpenCL devices found for this platform!");
+    Logger::log()->error("No OpenCL devices found for this platform!");
     return false;
   }
   else
@@ -151,8 +150,8 @@ bool DeviceManager::set_device(size_t platform_id)
     this->cl_device = devices[0];
     this->device_id = platform_id;
 
-    LOG_DEBUG("OpenCL device: %s",
-              this->cl_device.getInfo<CL_DEVICE_NAME>().c_str());
+    Logger::log()->trace("OpenCL device: {}",
+                         this->cl_device.getInfo<CL_DEVICE_NAME>().c_str());
   }
 
   return true;
@@ -160,21 +159,21 @@ bool DeviceManager::set_device(size_t platform_id)
 
 void log_device_infos(cl::Device cl_device)
 {
-  LOG_INFO("- device Name: %s", cl_device.getInfo<CL_DEVICE_NAME>().c_str());
-  LOG_INFO(" - device Vendor: %s",
-           cl_device.getInfo<CL_DEVICE_VENDOR>().c_str());
-  LOG_INFO(" - device Version: %s",
-           cl_device.getInfo<CL_DEVICE_VERSION>().c_str());
+  // LOG_INFO("- device Name: %s", cl_device.getInfo<CL_DEVICE_NAME>().c_str());
+  // LOG_INFO(" - device Vendor: %s",
+  //          cl_device.getInfo<CL_DEVICE_VENDOR>().c_str());
+  // LOG_INFO(" - device Version: %s",
+  //          cl_device.getInfo<CL_DEVICE_VERSION>().c_str());
 
-  switch (cl_device.getInfo<CL_DEVICE_TYPE>())
-  {
-  case CL_DEVICE_TYPE_GPU: LOG_INFO(" - device Type: GPU"); break;
-  case CL_DEVICE_TYPE_CPU: LOG_INFO(" - device Type: CPU"); break;
-  case CL_DEVICE_TYPE_ACCELERATOR:
-    LOG_INFO(" - device Type: ACCELERATOR");
-    break;
-  default: LOG_INFO(" - device Type: unknown");
-  }
+  // switch (cl_device.getInfo<CL_DEVICE_TYPE>())
+  // {
+  // case CL_DEVICE_TYPE_GPU: LOG_INFO(" - device Type: GPU"); break;
+  // case CL_DEVICE_TYPE_CPU: LOG_INFO(" - device Type: CPU"); break;
+  // case CL_DEVICE_TYPE_ACCELERATOR:
+  //   LOG_INFO(" - device Type: ACCELERATOR");
+  //   break;
+  // default: LOG_INFO(" - device Type: unknown");
+  // }
 }
 
 } // namespace clwrapper

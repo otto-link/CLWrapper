@@ -1,22 +1,19 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "macrologger.h"
-
 #include "cl_error_lookup.hpp"
 
 #include "cl_wrapper/device_manager.hpp"
 #include "cl_wrapper/kernel_manager.hpp"
+#include "cl_wrapper/logger.hpp"
 #include "cl_wrapper/run.hpp"
-
-#include <iostream>
 
 namespace clwrapper
 {
 
 Run::Run(const std::string &kernel_name) : kernel_name(kernel_name)
 {
-  LOG_DEBUG("Run::Run [%s]", this->kernel_name.c_str());
+  Logger::log()->trace("Run::Run [{}]", this->kernel_name.c_str());
 
   this->queue = cl::CommandQueue(KernelManager::context(),
                                  DeviceManager::device());
@@ -83,7 +80,7 @@ void Run::bind_imagef(const std::string  &id,
 
 void Run::execute(int total_elements)
 {
-  // LOG_DEBUG("executing... [%s]", this->kernel_name.c_str());
+  // Logger::log()->trace("executing... [%s]", this->kernel_name.c_str());
 
   this->queue.flush();
 
@@ -106,7 +103,7 @@ void Run::execute(int total_elements)
 
 void Run::execute(const std::vector<int> &global_range_2d)
 {
-  // LOG_DEBUG("executing... [%s]", this->kernel_name.c_str());
+  // Logger::log()->trace("executing... [%s]", this->kernel_name.c_str());
 
   this->queue.flush();
 
@@ -139,7 +136,7 @@ void Run::read_buffer(const std::string &id)
   }
   else
   {
-    LOG_ERROR("unknown buffer id: [%s]", id.c_str());
+    Logger::log()->error("unknown buffer id: [{}]", id.c_str());
   }
 }
 
@@ -163,7 +160,7 @@ void Run::read_imagef(const std::string &id)
   }
   else
   {
-    LOG_ERROR("unknown 2D imagef id: [%s]", id.c_str());
+    Logger::log()->error("unknown 2D imagef id: [{}]", id.c_str());
   }
 }
 
@@ -180,7 +177,7 @@ void Run::write_buffer(const std::string &id)
   }
   else
   {
-    LOG_ERROR("unknown buffer id: [%s]", id.c_str());
+    Logger::log()->error("unknown buffer id: [%s]", id.c_str());
   }
 }
 
@@ -204,7 +201,7 @@ void Run::write_imagef(const std::string &id)
   }
   else
   {
-    LOG_ERROR("unknown 2D imagef id: [%s]", id.c_str());
+    Logger::log()->error("unknown 2D imagef id: [{}]", id.c_str());
   }
 }
 

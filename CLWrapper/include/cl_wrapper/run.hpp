@@ -15,7 +15,6 @@
 #include <CL/opencl.hpp>
 
 #include "cl_error_lookup.hpp"
-#include "macrologger.h"
 
 namespace clwrapper
 {

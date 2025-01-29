@@ -14,8 +14,6 @@
 
 #include <CL/opencl.hpp>
 
-#include "macrologger.h"
-
 namespace clwrapper
 {
 
@@ -37,12 +35,12 @@ public:
     }
     catch (const std::exception &e)
     {
-      LOG_ERROR("Error: %s", e.what());
+      // LOG_ERROR("Error: %s", e.what());
       return false;
     }
     catch (...)
     {
-      LOG_ERROR("Unknown error");
+      // LOG_ERROR("Unknown error");
       return false;
     }
 

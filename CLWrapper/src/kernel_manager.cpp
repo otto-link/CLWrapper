@@ -4,10 +4,12 @@
 #include <iostream>
 
 #include "cl_error_lookup.hpp"
-#include "macrologger.h"
 
 #include "cl_wrapper/device_manager.hpp"
 #include "cl_wrapper/kernel_manager.hpp"
+#include "cl_wrapper/logger.hpp"
+
+#include <iostream>
 
 namespace clwrapper
 {
@@ -25,7 +27,7 @@ void KernelManager::add_kernel(const std::string &kernel_sources)
 
 void KernelManager::build_program()
 {
-  LOG_DEBUG("loading kernel sources");
+  Logger::log()->trace("loading kernel sources");
 
   if (this->full_sources.length() > 0)
   {
@@ -37,14 +39,14 @@ void KernelManager::build_program()
     sources.push_back(
         {this->full_sources.c_str(), this->full_sources.length()});
 
-    LOG_DEBUG("building OpenCL kernels");
+    Logger::log()->trace("building OpenCL kernels");
 
     this->cl_program = cl::Program(this->cl_context, sources);
     int err = this->cl_program.build({cl_device});
 
     if (err != 0)
     {
-      LOG_ERROR("build error");
+      Logger::log()->critical("build error");
       std::cout << " Error building, compiler says:\n"
                 << "----------------------------------------------\n"
                 << this->cl_program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(
@@ -55,11 +57,11 @@ void KernelManager::build_program()
 
     std::string kernel_names = this->cl_program
                                    .getInfo<CL_PROGRAM_KERNEL_NAMES>();
-    LOG_DEBUG("available kernels: %s", kernel_names.c_str());
+    Logger::log()->trace("available kernels: {}", kernel_names.c_str());
   }
   else
   {
-    LOG_ERROR("program building skipped, kernel sources are empty");
+    Logger::log()->error("program building skipped, kernel sources are empty");
   }
 }
 
