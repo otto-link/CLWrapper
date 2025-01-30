@@ -1,6 +1,8 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <chrono>
+
 #include "cl_error_lookup.hpp"
 
 #include "cl_wrapper/device_manager.hpp"
@@ -78,7 +80,7 @@ void Run::bind_imagef(const std::string  &id,
   bind_imagef(id, vector, width, height, direction);
 }
 
-void Run::execute(int total_elements)
+void Run::execute(int total_elements, float *p_elapsed_time)
 {
   // Logger::log()->trace("executing... [%s]", this->kernel_name.c_str());
 
@@ -97,11 +99,24 @@ void Run::execute(int total_elements)
                                          cl::NullRange);
   clerror::throw_opencl_error(err);
 
+  auto t0 = std::chrono::high_resolution_clock::now();
+
   err = this->queue.finish();
   clerror::throw_opencl_error(err);
+
+  // compute elapsed time
+  if (p_elapsed_time)
+  {
+    auto t1 = std::chrono::high_resolution_clock::now();
+
+    *p_elapsed_time = static_cast<float>(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0).count() *
+        1e-6f);
+  }
 }
 
-void Run::execute(const std::vector<int> &global_range_2d)
+void Run::execute(const std::vector<int> &global_range_2d,
+                  float                  *p_elapsed_time)
 {
   // Logger::log()->trace("executing... [%s]", this->kernel_name.c_str());
 
@@ -119,8 +134,20 @@ void Run::execute(const std::vector<int> &global_range_2d)
                                          cl::NullRange);
   clerror::throw_opencl_error(err);
 
+  auto t0 = std::chrono::high_resolution_clock::now();
+
   err = this->queue.flush();
   clerror::throw_opencl_error(err);
+
+  // compute elapsed time
+  if (p_elapsed_time)
+  {
+    auto t1 = std::chrono::high_resolution_clock::now();
+
+    *p_elapsed_time = static_cast<float>(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0).count() *
+        1e-6f);
+  }
 }
 
 void Run::read_buffer(const std::string &id)

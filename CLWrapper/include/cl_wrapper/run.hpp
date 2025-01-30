@@ -115,9 +115,10 @@ public:
                    int                 height,
                    bool                is_out = false);
 
-  void execute(int total_elements);
+  void execute(int total_elements, float *p_elapsed_time = nullptr);
 
-  void execute(const std::vector<int> &global_range_2d);
+  void execute(const std::vector<int> &global_range_2d,
+               float                  *p_elapsed_time = nullptr);
 
   void read_buffer(const std::string &id);
 
