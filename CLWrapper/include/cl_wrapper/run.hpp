@@ -94,6 +94,14 @@ public:
     this->buffers[id] = buffer;
   }
 
+  template <typename T>
+  void bind_buffer(const std::string    &id,
+                   const std::vector<T> &vector,
+                   cl_mem_flags          flags = CL_MEM_READ_WRITE)
+  {
+    this->bind_buffer<T>(id, const_cast<std::vector<float> &>(vector), flags);
+  }
+
   // data are copied at binding
   void bind_imagef(const std::string  &id,
                    std::vector<float> &vector,
