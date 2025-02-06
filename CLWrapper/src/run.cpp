@@ -80,6 +80,19 @@ void Run::bind_imagef(const std::string  &id,
   bind_imagef(id, vector, width, height, direction);
 }
 
+void Run::bind_imagef(const std::string        &id,
+                      const std::vector<float> &vector,
+                      int                       width,
+                      int                       height,
+                      bool                      is_out)
+{
+  bind_imagef(id,
+              const_cast<std::vector<float> &>(vector),
+              width,
+              height,
+              is_out);
+}
+
 void Run::execute(int total_elements, float *p_elapsed_time)
 {
   // Logger::log()->trace("executing... [%s]", this->kernel_name.c_str());

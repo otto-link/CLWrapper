@@ -115,6 +115,12 @@ public:
                    int                 height,
                    bool                is_out = false);
 
+  void bind_imagef(const std::string        &id,
+                   const std::vector<float> &vector,
+                   int                       width,
+                   int                       height,
+                   bool                      is_out = false);
+
   void execute(int total_elements, float *p_elapsed_time = nullptr);
 
   void execute(const std::vector<int> &global_range_2d,
