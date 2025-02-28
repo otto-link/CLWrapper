@@ -67,7 +67,7 @@ int main()
 
   auto run = clwrapper::Run("add_kernel_with_args");
 
-  int                n = 20;
+  int                n = 11;
   std::vector<float> a(n, 1.f);
   std::vector<float> b(n, 2.f);
   std::vector<float> c(n); // output
@@ -79,7 +79,7 @@ int main()
   float p1 = 1.f;
   float p2 = 2.f;
   int   p3 = 1;
-  run.bind_arguments(p1, p2, p3);
+  run.bind_arguments(n, p1, p2, p3);
 
   run.write_buffer("a");
   run.write_buffer("b");
@@ -88,8 +88,8 @@ int main()
 
   run.read_buffer("c");
 
-  for (auto &v : c)
-    std::cout << v << "\n";
+  for (size_t k = 0; k < c.size(); ++k)
+    std::cout << k << ": " << c[k] << "\n";
 
   return 0;
 }
@@ -98,21 +98,31 @@ int main()
 The file `add.cl` contains:
 ```C++
 R""(
-kernel void add_kernel(global float *A, global float *B, global float *C)
+kernel void add_kernel(global float *A,
+                       global float *B,
+                       global float *C,
+                       const int     n)
 {
-  const uint n = get_global_id(0);
-  C[n] = A[n] + B[n];
+  const uint i = get_global_id(0);
+
+  if (i >= n) return;
+
+  C[i] = A[i] + B[i];
 }
 
 kernel void add_kernel_with_args(global float *A,
                                  global float *B,
                                  global float *C,
+                                 const int     n,
                                  const float   p1,
                                  const float   p2,
                                  const int     p3)
 {
-  const uint n = get_global_id(0);
-  C[n] = A[n] + B[n] + p1 + p2 + p3;
+  const uint i = get_global_id(0);
+
+  if (i >= n) return;
+
+  C[i] = A[i] + B[i] + p1 + p2 + p3;
 }
 )""
 ```
