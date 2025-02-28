@@ -77,7 +77,7 @@ private:
   size_t device_id = 0;
 
   // allowed device type (CL_DEVICE_TYPE_ALL | GPU | CPU)
-  cl_device_type device_type = CL_DEVICE_TYPE_GPU;
+  cl_device_type device_type = CL_DEVICE_TYPE_ALL;
 
   // Private constructor
   DeviceManager();
