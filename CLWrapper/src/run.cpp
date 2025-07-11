@@ -122,9 +122,9 @@ void Run::execute(int total_elements, float *p_elapsed_time)
   {
     auto t1 = std::chrono::high_resolution_clock::now();
 
-    *p_elapsed_time = static_cast<float>(
+    *p_elapsed_time =
         std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0).count() *
-        1e-6f);
+        1e-6f;
   }
 }
 
@@ -157,9 +157,9 @@ void Run::execute(const std::vector<int> &global_range_2d,
   {
     auto t1 = std::chrono::high_resolution_clock::now();
 
-    *p_elapsed_time = static_cast<float>(
+    *p_elapsed_time =
         std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0).count() *
-        1e-6f);
+        1e-6f;
   }
 }
 
