@@ -55,6 +55,8 @@ public:
     return this->cl_program;
   }
 
+  void set_build_options(const std::string &new_build_options);
+
 private:
   // Private constructor
   KernelManager();
@@ -68,6 +70,8 @@ private:
   cl::Context cl_context;
 
   std::string full_sources = "";
+
+  std::string build_options = "";
 };
 
 } // namespace clwrapper

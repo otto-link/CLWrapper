@@ -40,14 +40,15 @@ void KernelManager::build_program()
         {this->full_sources.c_str(), this->full_sources.length()});
 
     Logger::log()->trace("building OpenCL kernels");
+    Logger::log()->trace("build options: {}", this->build_options);
 
     this->cl_program = cl::Program(this->cl_context, sources);
-    int err = this->cl_program.build({cl_device});
+    int err = this->cl_program.build({cl_device}, this->build_options.c_str());
 
     if (err != 0)
     {
       Logger::log()->critical("build error");
-      std::cout << " Error building, compiler says:\n"
+      std::cout << " Error building, OpenCL compiler says:\n"
                 << "----------------------------------------------\n"
                 << this->cl_program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(
                        cl_device)
@@ -63,6 +64,11 @@ void KernelManager::build_program()
   {
     Logger::log()->trace("program building skipped, kernel sources are empty");
   }
+}
+
+void KernelManager::set_build_options(const std::string &new_build_options)
+{
+  this->build_options = new_build_options;
 }
 
 } // namespace clwrapper
