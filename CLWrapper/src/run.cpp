@@ -217,7 +217,7 @@ void Run::write_buffer(const std::string &id)
   }
   else
   {
-    Logger::log()->error("unknown buffer id: [%s]", id.c_str());
+    Logger::log()->error("unknown buffer id: [{}]", id.c_str());
   }
 }
 
