@@ -19,9 +19,14 @@ KernelManager::KernelManager()
   this->build_program();
 }
 
-void KernelManager::add_kernel(const std::string &kernel_sources)
+void KernelManager::add_kernel(const std::string &kernel_sources,
+                               bool               clear_sources)
 {
-  this->full_sources += kernel_sources;
+  if (clear_sources)
+    this->full_sources = kernel_sources;
+  else
+    this->full_sources += kernel_sources;
+
   this->build_program();
 }
 

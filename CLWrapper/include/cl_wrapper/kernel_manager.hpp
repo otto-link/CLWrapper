@@ -36,7 +36,8 @@ public:
     return KernelManager::get_instance().get_program();
   }
 
-  void add_kernel(const std::string &kernel_sources);
+  void add_kernel(const std::string &kernel_sources,
+                  bool               clear_sources = false);
 
   void build_program();
 
